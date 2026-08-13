@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Remind Me</string>
+    <string name="title_activity_main">Remind Me</string>
+    <string name="package_name">com.lior.remindme</string>
+    <string name="custom_url_scheme">com.lior.remindme</string>
+    <string name="hold_to_dismiss">Hold to dismiss</string>
+    <string name="hold_keep_going">Keep holding…</string>
+    <string name="hold_hint">Hold the button for 3 seconds</string>
+</resources>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/alarm_bg"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="32dp">
+
+    <TextView
+        android:id="@+id/alarm_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:letterSpacing="0.05"
+        android:textColor="@color/alarm_accent"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/alarm_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="48dp"
+        android:gravity="center"
+        android:lineSpacingMultiplier="1.15"
+        android:textColor="@color/alarm_text"
+        android:textSize="32sp"
+        android:textStyle="bold" />
+
+    <FrameLayout
+        android:id="@+id/hold_button"
+        android:layout_width="260dp"
+        android:layout_height="68dp"
+        android:background="@drawable/hold_button_bg"
+        android:clipToOutline="true">
+
+        <View
+            android:id="@+id/hold_fill"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@color/alarm_accent" />
+
+        <TextView
+            android:id="@+id/hold_label"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/hold_to_dismiss"
+            android:textColor="@color/alarm_text"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+    </FrameLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/hold_hint"
+        android:textColor="@color/alarm_muted"
+        android:textSize="13sp" />
+</LinearLayout>

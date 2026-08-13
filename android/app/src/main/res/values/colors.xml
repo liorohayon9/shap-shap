@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FF8A3D</color>
+    <color name="colorPrimaryDark">#0D0F14</color>
+    <color name="colorAccent">#FF8A3D</color>
+
+    <color name="alarm_bg">#0D0F14</color>
+    <color name="alarm_surface">#1E2430</color>
+    <color name="alarm_accent">#FF8A3D</color>
+    <color name="alarm_text">#EEF1F6</color>
+    <color name="alarm_muted">#8D97A8</color>
+</resources>
