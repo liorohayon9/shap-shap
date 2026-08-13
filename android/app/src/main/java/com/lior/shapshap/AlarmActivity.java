@@ -110,6 +110,9 @@ public class AlarmActivity extends Activity {
             animator.cancel();
             animator = null;
         }
+        // Recorded before stopping the service, so the app can show it as done
+        // rather than assuming a task whose time has passed was missed.
+        AlarmStore.addEvent(this, alarmId, AlarmStore.OUTCOME_DISMISSED);
         startService(new Intent(this, AlarmService.class).setAction(AlarmService.ACTION_DISMISS));
         finish();
     }

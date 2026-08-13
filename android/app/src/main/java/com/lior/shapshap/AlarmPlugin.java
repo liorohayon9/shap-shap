@@ -53,6 +53,14 @@ public class AlarmPlugin extends Plugin {
         call.resolve();
     }
 
+    /** Returns how recently-fired alarms ended, and clears the log. */
+    @PluginMethod
+    public void takeEvents(PluginCall call) {
+        JSObject out = new JSObject();
+        out.put("json", AlarmStore.takeEvents(getContext()));
+        call.resolve(out);
+    }
+
     @PluginMethod
     public void status(PluginCall call) {
         Context ctx = getContext();

@@ -15,6 +15,7 @@ import {
   onWebAlarm,
   resyncAlarms,
   scheduleAlarm,
+  takeAlarmEvents,
   type AlarmPermissions,
 } from './lib/alarms';
 import type { Task } from './lib/types';
@@ -52,26 +53,47 @@ export default function App() {
 
   useEffect(() => saveTasks(tasks), [tasks]);
 
+  // Keep the OS in step with the list. Re-arming an alarm simply replaces the
+  // existing one, so doing this on every change is cheap and self-heals a
+  // reboot, a force-stop, or an alarm too far out to have been scheduled yet.
+  useEffect(() => {
+    void resyncAlarms(tasks);
+  }, [tasks]);
+
   const refreshPerms = useCallback(() => {
     void checkPermissions().then(setPerms);
   }, []);
 
-  // Re-arm on open: covers reboots, force-stops, and long-range alarms.
+  /**
+   * Finds out what happened while the app was closed. A task whose time has
+   * passed is only "missed" if the alarm actually rang out — if he held the
+   * button, the native screen recorded that and it belongs under Done.
+   */
+  const catchUp = useCallback(async () => {
+    const events = await takeAlarmEvents();
+    const dismissed = new Set(events.filter((e) => e.outcome === 'dismissed').map((e) => e.id));
+    setTasks((prev) =>
+      reconcile(
+        // Repeats are left alone: reconcile moves them to their next slot, which
+        // takes them out of the missed state on its own.
+        prev.map((t) => (dismissed.has(t.id) && t.repeat === 'none' ? { ...t, done: true } : t)),
+      ),
+    );
+  }, []);
+
   useEffect(() => {
-    void resyncAlarms(tasks);
+    void catchUp();
     refreshPerms();
     onWebAlarm((task) => setMode({ kind: 'ringing', task }));
 
     const onVisible = () => {
       if (document.visibilityState !== 'visible') return;
-      setTasks((prev) => reconcile(prev));
+      void catchUp();
       refreshPerms();
     };
     document.addEventListener('visibilitychange', onVisible);
     return () => document.removeEventListener('visibilitychange', onVisible);
-    // Runs once: `tasks` here is only the initial snapshot for the first resync.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [catchUp, refreshPerms]);
 
   const stopListening = useCallback(() => {
     stopRef.current?.();

@@ -18,6 +18,15 @@ final class AlarmStore {
 
     private static final String PREFS = "shapshap.alarms";
     private static final String KEY = "armed";
+    private static final String KEY_EVENTS = "events";
+
+    /** Held down until it stopped — the reminder was actually dealt with. */
+    static final String OUTCOME_DISMISSED = "dismissed";
+    /** Rang out with nobody answering. */
+    static final String OUTCOME_MISSED = "missed";
+
+    /** Plenty for any realistic gap between an alarm firing and the app opening. */
+    private static final int MAX_EVENTS = 100;
 
     static final class Entry {
         final int id;
@@ -78,5 +87,34 @@ final class AlarmStore {
         List<Entry> entries = all(ctx);
         entries.removeIf(e -> e.id == id);
         write(ctx, entries);
+    }
+
+    /**
+     * Records how an alarm ended. The alarm screen is native and the task list is
+     * JavaScript, so without this the app cannot tell "he held the button" apart
+     * from "it rang out unanswered" — both just look like a task whose time passed.
+     */
+    static void addEvent(Context ctx, int id, String outcome) {
+        SharedPreferences p = prefs(ctx);
+        try {
+            JSONArray arr = new JSONArray(p.getString(KEY_EVENTS, "[]"));
+            JSONObject o = new JSONObject();
+            o.put("id", id);
+            o.put("outcome", outcome);
+            o.put("at", System.currentTimeMillis());
+            arr.put(o);
+            while (arr.length() > MAX_EVENTS) arr.remove(0);
+            // commit, not apply: the process may be killed moments after dismissal.
+            p.edit().putString(KEY_EVENTS, arr.toString()).commit();
+        } catch (JSONException ignored) {
+        }
+    }
+
+    /** Hands the pending events to the web layer and clears them in one step. */
+    static String takeEvents(Context ctx) {
+        SharedPreferences p = prefs(ctx);
+        String raw = p.getString(KEY_EVENTS, "[]");
+        p.edit().putString(KEY_EVENTS, "[]").commit();
+        return raw;
     }
 }

@@ -225,6 +225,8 @@ public class AlarmService extends Service {
         ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE);
 
         if (!dismissed) {
+            // Rang the full timeout with no answer — this one really was missed.
+            AlarmStore.addEvent(this, alarmId, AlarmStore.OUTCOME_MISSED);
             postMissed();
         }
         stopSelf();

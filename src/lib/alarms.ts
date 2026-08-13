@@ -12,9 +12,18 @@ export interface AlarmPermissions {
   fullScreen: boolean;
 }
 
+/** How a fired alarm ended, reported by the native alarm screen. */
+export interface AlarmEvent {
+  id: number;
+  outcome: 'dismissed' | 'missed';
+  at: number;
+}
+
 export interface AlarmPlugin {
   schedule(o: { id: number; title: string; at: number }): Promise<void>;
   cancel(o: { id: number }): Promise<void>;
+  /** Reads the pending outcomes and clears them, so each one is applied once. */
+  takeEvents(): Promise<{ json: string }>;
   /** Named `status` rather than `checkPermissions` so it doesn't shadow Capacitor's own. */
   status(): Promise<AlarmPermissions>;
   requestExactAlarm(): Promise<void>;
@@ -93,6 +102,25 @@ const ALL_CLEAR: AlarmPermissions = {
   batteryOptimized: false,
   fullScreen: true,
 };
+
+/**
+ * Drains the native outcome log. Web has no native alarm screen, so the in-page
+ * ring screen reports its own dismissal directly and there is nothing to drain.
+ */
+export async function takeAlarmEvents(): Promise<AlarmEvent[]> {
+  if (!isNativeAlarm()) return [];
+  try {
+    const { json } = await Native.takeEvents();
+    const parsed: unknown = JSON.parse(json);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(
+      (e): e is AlarmEvent =>
+        typeof e?.id === 'number' && (e.outcome === 'dismissed' || e.outcome === 'missed'),
+    );
+  } catch {
+    return [];
+  }
+}
 
 export async function checkPermissions(): Promise<AlarmPermissions> {
   if (!isNativeAlarm()) return ALL_CLEAR;
