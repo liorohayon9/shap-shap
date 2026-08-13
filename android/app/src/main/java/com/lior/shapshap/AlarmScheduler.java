@@ -1,4 +1,4 @@
-package com.lior.remindme;
+﻿package com.lior.shapshap;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -18,7 +18,7 @@ final class AlarmScheduler {
         Intent intent = new Intent(ctx, AlarmReceiver.class)
                 // Unique action per id: otherwise Intent.filterEquals() treats every
                 // alarm as the same one and they overwrite each other.
-                .setAction("com.lior.remindme.FIRE." + id)
+                .setAction("com.lior.shapshap.FIRE." + id)
                 .putExtra(EXTRA_ID, id)
                 .putExtra(EXTRA_TITLE, title)
                 .putExtra(EXTRA_AT, at);

@@ -1,4 +1,4 @@
-package com.lior.remindme;
+﻿package com.lior.shapshap;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -16,7 +16,7 @@ import java.util.List;
  */
 final class AlarmStore {
 
-    private static final String PREFS = "remindme.alarms";
+    private static final String PREFS = "shapshap.alarms";
     private static final String KEY = "armed";
 
     static final class Entry {

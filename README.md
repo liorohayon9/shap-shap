@@ -1,4 +1,4 @@
-# Remind Me
+# Shap Shap
 
 Speak a reminder, get an alarm that won't let you forget it.
 
@@ -23,7 +23,7 @@ Nothing leaves the phone. There is no server and no account.
 offline and looks like an app, but the browser can only ring while it's open — good
 for trying the flow, not for real reminders.
 
-**As an APK.** Download `remind-me.apk` from the
+**As an APK.** Download `shap-shap.apk` from the
 [latest release](../../releases/latest) and tap it. This is the real thing: alarms
 are registered with the operating system, so they fire with the app closed, the
 screen off, and no internet.
@@ -59,9 +59,10 @@ install them, push to `main` — GitHub Actions builds it and attaches the APK t
 ```
 src/lib/parse.ts     speech text -> { title, time, repeat }
 src/lib/alarms.ts    JS side of the native bridge, with a browser fallback
-android/.../AlarmScheduler.java   registers the alarm with the OS
-android/.../AlarmService.java     rings, vibrates, holds the wake lock
-android/.../AlarmActivity.java    the hold-to-dismiss screen
+android/app/src/main/java/com/lior/shapshap/
+  AlarmScheduler.java   registers the alarm with the OS
+  AlarmService.java     rings, vibrates, holds the wake lock
+  AlarmActivity.java    the hold-to-dismiss screen
 ```
 
 The APK is debug-signed, which is all a sideloaded app needs. It is not intended

@@ -14,8 +14,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['icon.svg', 'icons/*.png'],
       manifest: {
-        name: 'Remind Me',
-        short_name: 'Remind Me',
+        name: 'Shap Shap',
+        short_name: 'Shap Shap',
         description: 'Speak a reminder, get an alarm that won’t let you forget.',
         theme_color: '#0d0f14',
         background_color: '#0d0f14',

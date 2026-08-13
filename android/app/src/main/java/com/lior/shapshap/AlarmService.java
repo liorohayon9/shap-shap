@@ -1,4 +1,4 @@
-package com.lior.remindme;
+﻿package com.lior.shapshap;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -31,8 +31,8 @@ import androidx.core.app.ServiceCompat;
  */
 public class AlarmService extends Service {
 
-    static final String ACTION_RING = "com.lior.remindme.RING";
-    static final String ACTION_DISMISS = "com.lior.remindme.DISMISS";
+    static final String ACTION_RING = "com.lior.shapshap.RING";
+    static final String ACTION_DISMISS = "com.lior.shapshap.DISMISS";
 
     private static final String CHANNEL_ALARM = "alarm";
     private static final String CHANNEL_MISSED = "missed";
@@ -162,7 +162,7 @@ public class AlarmService extends Service {
     private void acquireWakeLock() {
         PowerManager pm = getSystemService(PowerManager.class);
         if (pm == null) return;
-        wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "remindme:alarm");
+        wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "shapshap:alarm");
         wakeLock.setReferenceCounted(false);
         wakeLock.acquire(RING_TIMEOUT_MS + 60_000L);
     }

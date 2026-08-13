@@ -1,8 +1,8 @@
-import type { CapacitorConfig } from '@capacitor/cli';
+﻿import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.lior.remindme',
-  appName: 'Remind Me',
+  appId: 'com.lior.shapshap',
+  appName: 'Shap Shap',
   webDir: 'dist',
   android: {
     // The alarm screen is our own Activity; keep the web layer out of its way.

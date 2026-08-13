@@ -1,4 +1,4 @@
-package com.lior.remindme;
+﻿package com.lior.shapshap;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

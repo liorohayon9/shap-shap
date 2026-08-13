@@ -1,10 +1,10 @@
-apply plugin: 'com.android.application'
+﻿apply plugin: 'com.android.application'
 
 android {
-    namespace = "com.lior.remindme"
+    namespace = "com.lior.shapshap"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.lior.remindme"
+        applicationId "com.lior.shapshap"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

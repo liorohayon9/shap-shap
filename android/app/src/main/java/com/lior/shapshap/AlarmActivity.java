@@ -1,4 +1,4 @@
-package com.lior.remindme;
+﻿package com.lior.shapshap;
 
 import android.animation.ValueAnimator;
 import android.app.Activity;

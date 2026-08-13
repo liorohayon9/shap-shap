@@ -176,7 +176,7 @@ export default function App() {
   return (
     <div className="app">
       <header className="app__header">
-        <h1 className="app__title">Remind Me</h1>
+        <h1 className="app__title">Shap Shap</h1>
         {tasks.some((t) => !t.done) && (
           <span className="app__count">{tasks.filter((t) => !t.done).length} upcoming</span>
         )}
