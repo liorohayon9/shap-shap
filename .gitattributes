@@ -1,0 +1,6 @@
+# Keep LF in the repo. gradlew is run by the Linux CI runner and CRLF breaks it.
+* text=auto eol=lf
+*.jar binary
+*.png binary
+*.apk binary
+gradlew text eol=lf

@@ -1,4 +1,4 @@
-﻿package com.lior.shapshap;
+package com.lior.shapshap;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
