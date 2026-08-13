@@ -4,6 +4,7 @@ import { ConfirmSheet, type Draft } from './components/ConfirmSheet';
 import { TaskList } from './components/TaskList';
 import { RingScreen } from './components/RingScreen';
 import { SetupBanner } from './components/SetupBanner';
+import { Watermark } from './components/Watermark';
 import { nextOccurrence, parseSpeech } from './lib/parse';
 import { loadTasks, nextId, saveTasks, sortByTime } from './lib/store';
 import { startListening, speechSupported, type StopListening } from './lib/speech';
@@ -175,8 +176,11 @@ export default function App() {
 
   return (
     <div className="app">
+      <Watermark />
       <header className="app__header">
-        <h1 className="app__title">Shap Shap</h1>
+        <h1 className="app__title">
+          Shap Shap <span className="app__thumb" role="img" aria-label="thumbs up">👍</span>
+        </h1>
         {tasks.some((t) => !t.done) && (
           <span className="app__count">{tasks.filter((t) => !t.done).length} upcoming</span>
         )}

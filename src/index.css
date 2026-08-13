@@ -51,6 +51,27 @@ button {
   padding-top: env(safe-area-inset-top);
 }
 
+/* Texture, not decoration — it must never fight the list for attention. */
+.watermark {
+  position: fixed;
+  left: 50%;
+  top: 47%;
+  width: min(115vw, 560px);
+  height: auto;
+  transform: translate(-50%, -50%) rotate(-9deg);
+  color: var(--accent);
+  opacity: 0.055;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.app__header,
+.app__main,
+.app__footer {
+  position: relative;
+  z-index: 1;
+}
+
 .app__header {
   display: flex;
   align-items: baseline;
@@ -63,6 +84,13 @@ button {
   font-size: 22px;
   font-weight: 650;
   letter-spacing: -0.02em;
+}
+
+.app__thumb {
+  font-size: 0.95em;
+  /* Emoji sit high on the text baseline; nudge it back down to centre. */
+  display: inline-block;
+  transform: translateY(1px);
 }
 
 .app__count {

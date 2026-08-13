@@ -106,8 +106,17 @@ function startWeb(h: SpeechHandlers): StopListening {
  * Loaded lazily: the plugin package is Android-only, and importing it eagerly
  * would drag native stubs into the browser build.
  */
+/** Nothing heard at all for this long — stop rather than leave him staring at "Listening…". */
+const SILENCE_GIVE_UP_MS = 20_000;
+
 async function startNative(h: SpeechHandlers): Promise<StopListening> {
   const { SpeechRecognition } = await import('@capacitor-community/speech-recognition');
+
+  const { available } = await SpeechRecognition.available();
+  if (!available) {
+    h.onError('This phone has no speech recogniser. Install Google’s "Speech Recognition & Synthesis".');
+    return () => {};
+  }
 
   const perm = await SpeechRecognition.requestPermissions();
   if (perm.speechRecognition !== 'granted') {
@@ -117,36 +126,61 @@ async function startNative(h: SpeechHandlers): Promise<StopListening> {
 
   let best = '';
   let settled = false;
-  const listener = await SpeechRecognition.addListener('partialResults', (data: { matches: string[] }) => {
-    const text = data.matches?.[0]?.trim();
-    if (text) {
-      best = text;
-      h.onPartial(text);
-    }
-  });
+  const handles: Array<{ remove: () => Promise<void> }> = [];
+  let giveUp: ReturnType<typeof setTimeout> | undefined;
 
   const finish = () => {
     if (settled) return;
     settled = true;
-    void listener.remove();
+    clearTimeout(giveUp);
+    for (const handle of handles) void handle.remove();
     const text = best.trim();
     if (text) h.onFinal(text);
     else h.onError("Didn't catch that.");
   };
 
-  SpeechRecognition.start({
-    language: LANG,
-    partialResults: true,
-    popup: false,
-    maxResults: 1,
-  })
-    .then((res: { matches?: string[] } | undefined) => {
-      // Android returns the polished final transcript here; prefer it over partials.
-      const finalText = res?.matches?.[0]?.trim();
-      if (finalText) best = finalText;
+  handles.push(
+    await SpeechRecognition.addListener('partialResults', (data: { matches: string[] }) => {
+      const text = data.matches?.[0]?.trim();
+      if (!text) return;
+      best = text;
+      h.onPartial(text);
+    }),
+  );
+
+  // With partialResults on, this is the only signal that recognition has ended.
+  handles.push(
+    await SpeechRecognition.addListener('listeningState', (data: { status: 'started' | 'stopped' }) => {
+      if (data.status === 'stopped') finish();
+    }),
+  );
+
+  giveUp = setTimeout(() => {
+    void SpeechRecognition.stop().catch(() => {});
+    finish();
+  }, SILENCE_GIVE_UP_MS);
+
+  try {
+    // Documented to resolve immediately when partialResults is true, so its
+    // resolution says nothing about whether he has finished speaking. Only use
+    // a returned transcript if the plugin actually hands one back.
+    const res = await SpeechRecognition.start({
+      language: LANG,
+      partialResults: true,
+      popup: false,
+      maxResults: 5,
+    });
+    const direct = res?.matches?.[0]?.trim();
+    if (direct) {
+      best = direct;
       finish();
-    })
-    .catch(() => finish());
+    }
+  } catch {
+    h.onError('Could not start listening.');
+    settled = true;
+    clearTimeout(giveUp);
+    for (const handle of handles) void handle.remove();
+  }
 
   return () => {
     void SpeechRecognition.stop().catch(() => {});
