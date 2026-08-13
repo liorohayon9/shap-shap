@@ -65,5 +65,20 @@ android/app/src/main/java/com/lior/shapshap/
   AlarmActivity.java    the hold-to-dismiss screen
 ```
 
-The APK is debug-signed, which is all a sideloaded app needs. It is not intended
-for the Play Store.
+### Signing
+
+Android identifies an app by package name **plus signing key**, so the key can
+never change or updates stop installing over the existing app. The key lives in
+two repo secrets, `ANDROID_KEYSTORE_B64` and `ANDROID_KEYSTORE_PASSWORD`, and the
+build fails loudly if either is missing rather than shipping an APK nobody can
+install.
+
+A backup of the key sits outside the repo, on the Desktop:
+
+```
+shap-shap-signing-key-BACKUP.p12
+shap-shap-signing-key-BACKUP.password.txt
+```
+
+Keep them. Losing both means never being able to update an installed copy again —
+the only way back is uninstalling the app on every phone that has it.
