@@ -25,4 +25,7 @@ android/captures/
 *.apk
 *.aab
 *.keystore
+# The signing key lives in the ANDROID_KEYSTORE_B64 repo secret, never in git.
+*.p12
+*.jks
 !android/gradle/wrapper/gradle-wrapper.jar

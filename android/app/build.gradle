@@ -16,10 +16,29 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    // Android identifies an app by package name + signing key. This key lives in
+    // the ANDROID_KEYSTORE_B64 repo secret and must never change, or updates stop
+    // installing over the existing app.
+    signingConfigs {
+        release {
+            def ks = file('shapshap.p12')
+            if (ks.exists()) {
+                storeFile ks
+                storeType 'PKCS12'
+                storePassword System.getenv('KEYSTORE_PASSWORD')
+                keyAlias 'shapshap'
+                keyPassword System.getenv('KEYSTORE_PASSWORD')
+            }
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (file('shapshap.p12').exists()) {
+                signingConfig signingConfigs.release
+            }
         }
     }
 }

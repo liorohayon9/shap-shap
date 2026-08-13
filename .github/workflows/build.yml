@@ -42,14 +42,31 @@ jobs:
       - name: Copy web assets into the Android project
         run: npx cap sync android
 
+      # Without a stable key every build gets a fresh signature and Android
+      # refuses to install it over the copy already on the phone.
+      - name: Restore the signing key
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          if [ -z "$KEYSTORE_B64" ]; then
+            echo "::error::ANDROID_KEYSTORE_B64 is missing — the APK would be unsignable."
+            exit 1
+          fi
+          echo "$KEYSTORE_B64" | base64 -d > android/app/shapshap.p12
+          keytool -list -keystore android/app/shapshap.p12 -storetype PKCS12 \
+            -storepass "$KEYSTORE_PASSWORD" | sed -n '1,12p'
+
       - name: Assemble APK
         working-directory: android
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
         run: |
           chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon --stacktrace
+          ./gradlew assembleRelease --no-daemon --stacktrace
 
       - name: Name the APK
-        run: cp android/app/build/outputs/apk/debug/app-debug.apk shap-shap.apk
+        run: cp android/app/build/outputs/apk/release/app-release.apk shap-shap.apk
 
       - uses: actions/upload-artifact@v4
         with:
