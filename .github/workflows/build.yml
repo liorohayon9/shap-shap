@@ -53,7 +53,8 @@ jobs:
             echo "::error::ANDROID_KEYSTORE_B64 is missing — the APK would be unsignable."
             exit 1
           fi
-          echo "$KEYSTORE_B64" | base64 -d > android/app/shapshap.p12
+          # tr strips any stray CR/newlines a shell or editor may have folded in.
+          printf '%s' "$KEYSTORE_B64" | tr -d '\r\n ' | base64 -d > android/app/shapshap.p12
           keytool -list -keystore android/app/shapshap.p12 -storetype PKCS12 \
             -storepass "$KEYSTORE_PASSWORD" | sed -n '1,12p'
 
